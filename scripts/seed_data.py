@@ -94,7 +94,7 @@ def generate_products(amount = 500, share_anomalies = 0.05):
     for _ in range(amount_normal):
         products.append(create_normal_product())
     for _ in range(amount_anomalies):
-        products.append(create_normal_product())
+        products.append(create_anomaly_product())
 
     return products
 
@@ -133,35 +133,11 @@ def seed():
         db.commit()
         print("Alte Daten gelöscht.")
 
-        # === Produkte erzeugen ===
-        amount_anomalies = int(ANZAHL_PRODUKTE * ANTEIL_ANOMALIEN)
-        amount_normal = ANZAHL_PRODUKTE - amount_anomalies
-
-        products = []
-        for _ in range(amount_normal):
-            products.append(create_normal_product())
-        for _ in range(amount_anomalies):
-            products.append(create_anomaly_product())
-
-        db.add_all(products)
-        print(f"{ANZAHL_PRODUKTE} Produkte erzeugt ({amount_anomalies} Anomalien).")
-
-        # === Lieferanten erzeugen ===
-        amount_anomaly_supplier = int(ANZAHL_LIEFERANTEN * ANTEIL_ANOMALIEN)
-        amount_normal_supplier = ANZAHL_LIEFERANTEN - amount_anomaly_supplier
-
-        suppliers = []
-        for _ in range(amount_normal_supplier):
-            suppliers.append(create_supplier(is_anomaly = False))
-        for _ in range(amount_anomaly_supplier):
-            suppliers.append(create_supplier(is_anomaly=True))
-
-        db.add_all(suppliers)
-        print(f"{ANZAHL_LIEFERANTEN} Lieferanten erzeugt ({amount_anomaly_supplier} Anomalien)")
-
-        # === Alles speichern ===
-        db.commit()
-        print("\nSeeding abgeschlossen!")
+        # === Neue Lieferanten und Produkte hinzufügen ===
+        result = add_data(db)
+        print(f"{result['Produkte']} Produkte hinzugefügt.")
+        print(f"{result["Lieferanten"]} Liefranten hinzugefügt")
+        print("Datenbank erfolgreich befüllt!")
     
     except Exception as e:
         db.rollback()
