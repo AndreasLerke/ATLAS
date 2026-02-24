@@ -78,6 +78,28 @@ if page == "Dashboard":
         kategorien = len(set(item["category"] for item in inventory_data))
         st.metric("🏷️ Kategorien", kategorien)
 
+    # == Datenbank erweitern ===
+    st.divider()
+    st.subheader("🗃️ Datenbank erweitern")
+
+    if st.button("➕ 500 Produkte & 50 Lieferanten hinzufügen"):
+        response = requests.post(f"{API_BASE_URL}/api/inventory/seed")
+        result = response.json()
+
+        st.success(
+            f"✅ Erfolgreich hinzugefügt: "
+            f"{result['Hinzugefügte Produkte']} Produkte, "
+            f"{result['Hinzugefügte Lieferanten']} Lieferanten"
+        )
+
+        col_before, col_after = st.columns(2)
+        with col_before:
+            st.metric("📦 Produkte vorher", result["Produkte vorher"])
+            st.metric("🚚 Lieferanten vorher", result["Lieferanten vorher"])
+        with col_after:
+            st.metric("📦 Produkte nachher", result["Produkte nachher"])
+            st.metric("🚚 Lieferanten nachher", result["Lieferanten nachher"])
+
 elif page == "Anomalieerkennung":
     st.header("🔍 Anomalieerkennung")
     

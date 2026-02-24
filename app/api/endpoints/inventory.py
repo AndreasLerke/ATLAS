@@ -55,8 +55,8 @@ def seed_more_data(db: Session = Depends(get_db)):
     return {
         "Hinzugefügte Produkte": result["Produkte"],
         "Hinzugefügte Lieferanten": result["Lieferanten"],
-        "Gesamt Produkte vorher": products_before,
-        "Gesamt Produkte nachher": products_after,
-        "Gesamt Lieferanten vorher": suppliers_before,
-        "Gesamt Lieferanten nachher": suppliers_after
+        "Produkte vorher": products_before,
+        "Produkte nachher": products_after,
+        "Lieferanten vorher": suppliers_before,
+        "Lieferanten nachher": suppliers_after
     }
