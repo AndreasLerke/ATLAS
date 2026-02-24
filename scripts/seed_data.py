@@ -136,7 +136,7 @@ def seed():
         # === Neue Lieferanten und Produkte hinzufügen ===
         result = add_data(db)
         print(f"{result['Produkte']} Produkte hinzugefügt.")
-        print(f"{result["Lieferanten"]} Liefranten hinzugefügt")
+        print(f"{result['Lieferanten']} Liefranten hinzugefügt")
         print("Datenbank erfolgreich befüllt!")
     
     except Exception as e:

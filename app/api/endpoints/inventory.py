@@ -43,7 +43,7 @@ def get_inventory_item(item_id: int, db: Session = Depends(get_db)):
 
 # === 2.4 EXTENDED SEED - Datenbank um 500 Produkte und 50 Lieferanten erhöht ===
 @router.post("/seed")
-def sedd_more_data(db: Session = Depends(get_db)):
+def seed_more_data(db: Session = Depends(get_db)):
     products_before = db.query(Inventory).count()
     suppliers_before = db.query(Supplier).count()
 
