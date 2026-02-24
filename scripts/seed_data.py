@@ -111,6 +111,17 @@ def generate_suppliers(amount = 50, share_anomalies = 0.05):
 
     return suppliers
 
+def add_data(db, amount_products = 500, amount_suppliers = 50):
+    """Fügt neue Produkte und Liefranten der DB hinzu (ohne Löschen)."""
+    products = generate_products(amount_products)
+    suppliers = generate_suppliers(amount_suppliers)
+
+    db.add_all(products)
+    db.add_all(suppliers)
+    db.commit()
+
+    return {"Produkte": len(products), "Lieferanten": len(suppliers)}
+
 def seed():
     """HAUPTFUNKTION: Füllt die Datenbank mit Testdaten."""
     db = SessionLocal()
