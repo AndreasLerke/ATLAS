@@ -86,7 +86,7 @@ def create_supplier(is_anomaly = False):
         )
 
 def generate_products(amount = 500, share_anomalies = 0.05):
-    """Erzeugt eine LIste von Produkt-Objekten (ohne DB-Zugriff)"""
+    """Erzeugt eine Liste von Produkt-Objekten (ohne DB-Zugriff)"""
     amount_anomalies = int(amount * share_anomalies)
     amount_normal = amount - amount_anomalies
 
@@ -97,6 +97,19 @@ def generate_products(amount = 500, share_anomalies = 0.05):
         products.append(create_normal_product())
 
     return products
+
+def generate_suppliers(amount = 50, share_anomalies = 0.05):
+    """Erzeugt eine Liste von Liefranten-Objekten (ohne DB-Zugriff)"""
+    amount_anomalies = int(amount * share_anomalies)
+    amount_normal = amount - amount_anomalies
+
+    suppliers = []
+    for _ in range(amount_normal):
+        suppliers.append(create_supplier(is_anomaly=False))
+    for _ in range(amount_anomalies):
+        suppliers.append(create_supplier(is_anomaly=True))
+
+    return suppliers
 
 def seed():
     """HAUPTFUNKTION: Füllt die Datenbank mit Testdaten."""
