@@ -4,6 +4,7 @@ from sklearn.preprocessing import StandardScaler
 from sqlalchemy.orm import Session
 
 from app.models.orm_models import Supplier
+from app.services.model_manager import save_model, load_model, model_exists
 
 FEATURE_COLUMNS = ["delivery_reliability", "avg_delivery_days", "price_level", "quality_score"]
 N_CLUSTERS = 3
@@ -38,13 +39,24 @@ def cluster_suppliers(db: Session) -> dict:
     scaler = StandardScaler()
     features_scaled = scaler.fit_transform(features)
 
-    # === 3. Modell erstellen und trainieren ===
-    model = KMeans(
-        n_clusters = N_CLUSTERS,
-        random_state = RANDOM_STATE,
-        n_init = 10
-    )
-    model.fit(features_scaled)
+    # === 3. Modell erstellen oder neu trainieren ===
+    model = None
+    
+    if model_exists("kmeans_clustering"):
+        model = load_model("kmeans_clustering")
+
+    if model is None:
+        model = KMeans(
+            n_clusters = N_CLUSTERS,
+            random_state = RANDOM_STATE,
+            n_init = 10
+        )
+        model.fit(features_scaled)
+        save_model(model, "kmeans_clustering", {
+            "anzahl_lieferanten": len(df),
+            "n_clusters": N_CLUSTERS,
+            "features": FEATURE_COLUMNS
+        })
 
     # === 4. CLuster-Labels zuweisen ===
     df["cluster"] = model.predict(features_scaled)

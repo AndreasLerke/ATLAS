@@ -35,7 +35,9 @@ def detect_anomalies(db: Session) -> dict:
     # === 2. Features extrahieren ===
     features = df[FEATURE_COLUMNS]
 
-    # === 3. Modell erstellen und trainieren ===
+    # === 3. Modell erstellen oder neu trainieren ===
+    model = None
+
     if model_exists("isolation_forest"):
         model = load_model("isolation_forest")
     
