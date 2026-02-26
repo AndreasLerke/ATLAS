@@ -53,7 +53,7 @@ if os.path.exists(bg_path):
 st.sidebar.title("Navigation")
 page = st.sidebar.radio(
     "Bereich wählen:",
-    ["Dashboard", "Anomalieerkennung", "Lieferanten-Cluster"]
+    ["Dashboard", "Anomalieerkennung", "Lieferanten-Cluster", "MLOps Monitoring"]
 )
 
 # === Seiten-Logik ===
