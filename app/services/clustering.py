@@ -26,6 +26,44 @@ def get_supplier_dataframe(db: Session) -> pd.DataFrame:
 
     return pd.DataFrame(data)
 
+def find_optimal_clusters(db: Session, max_clusters= 8):
+    """Testet verschiedene Cluster-Anzahlen und findet die optimale"""
+
+    # Daten laden
+    df = get_supplier_dataframe(db)
+
+    if df.empty:
+        return {"error": "Keine Daten vorhanden"}
+    
+    # Features skalieren
+    features = df[FEATURE_COLUMNS]
+    scaler = StandardScaler()
+    features_scaled = scaler.fit_transform(features)
+
+    # Elbow Method + Silhouette Score für 2 bis max_clusters
+    results = []
+    for k in range(2, max_clusters + 1):
+        model = KMeans(n_clusters = k, random_state = RANDOM_STATE, n_init=10)
+        labels = model.fit_predict(features_scaled)
+        sil_score = silhouette_score(features_scaled, labels)
+        inertia = model.inertia_
+
+        results.append({
+            "k": k,
+            "silhouette_score": round(sil_score, 4),
+            "inertia": round(inertia, 2)
+        })
+
+    # Beste Cluster-Anzahl finden (höchster Silhouette Score)
+    best = max(results, key = lambda x: x["silhouette_score"])
+
+    return {
+        "results": results,
+        "optimal_k": best["k"],
+        "best_silhouette_score": best["silhouette_score"],
+        "aktuell_k": N_CLUSTERS
+    }
+
 def cluster_suppliers(db: Session) -> dict:
     """Führt K-Means Clustering auf den Supplier-Daten aus."""
 
