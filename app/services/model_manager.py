@@ -33,3 +33,14 @@ def save_model(model, model_name, metadata = None):
         json.dump(meta, f, indent = 4)
 
     return model_path
+
+# === 3.Modell laden ===
+def load_model(model_name):
+    """Lädt ein gespeichertes ML-Modell. Gibt None zurück falls nicht vorhanden."""
+
+    model_path = os.path.join(MODEL_DIR, f"{model_name}.joblib")
+
+    if not os.path.exists(model_path):
+        return None
+    
+    return joblib.load(model_path)
