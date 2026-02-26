@@ -3,6 +3,7 @@ from sklearn.ensemble import IsolationForest
 from sqlalchemy.orm import Session
 
 from app.models.orm_models import Inventory
+from app.services.model_manager import save_model, load_model, model_exists
 
 FEATURE_COLUMNS = ["quantity", "price"]
 CONTAMINATION = 0.05
@@ -35,13 +36,22 @@ def detect_anomalies(db: Session) -> dict:
     features = df[FEATURE_COLUMNS]
 
     # === 3. Modell erstellen und trainieren ===
-    model = IsolationForest(
-        contamination = CONTAMINATION,
-        random_state = RANDOM_STATE,
-        n_estimators = 100
-    )
+    if model_exists("isolation_forest"):
+        model = load_model("isolation_forest")
+    
+    if model is None:
+        model = IsolationForest(
+            contamination = CONTAMINATION,
+            random_state = RANDOM_STATE,
+            n_estimators = 100
+        )
 
-    model.fit(features)
+        model.fit(features)
+        save_model(model, "isolation_forest", {
+            "anzahl_datenpunkte": len(df),
+            "contamination": CONTAMINATION,
+            "features": FEATURE_COLUMNS
+        })
 
     # === 4. Vorhersage treffen ===
     df["anomaly_score"] = model.decision_function(features)
@@ -62,4 +72,4 @@ def detect_anomalies(db: Session) -> dict:
             "features_used": FEATURE_COLUMNS,
             "n_estimators": 100
         }
-    } 
+    }
