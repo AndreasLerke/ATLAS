@@ -66,11 +66,14 @@ def evaluate_models(db:Session):
         "anomaly_detection": {
             "total_products": total_products,
             "anomalies_found": anomalies_found,
-            "anomaly_ratio": round(anomaly_ratio, 4)
+            "anomaly_ratio": round(anomaly_ratio, 4),
+            "score_stats": anomaly_result["score_stats"],
+            "anomaly_percentage": anomaly_result["anomaly_percentage"]
         },
         "clustering": {
             "total_suppliers": total_suppliers,
-            "n_clusters": cluster_result["n_clusters"]
+            "n_clusters": cluster_result["n_clusters"],
+            "silhouette_score": cluster_result["silhouette_score"]
         }
     }
 
