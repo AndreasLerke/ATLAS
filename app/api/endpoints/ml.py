@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_db
-from app.services.anomaly_detection import detect_anomalies
+from app.services.anomaly_detection import detect_anomalies, find_optimal_contamination
 from app.services.model_monitor import get_model_status, evaluate_models
 from app.services.clustering import cluster_suppliers, find_optimal_clusters
 
@@ -64,4 +64,10 @@ def evaluate(db: Session = Depends(get_db)):
 @router.get("/optimize-clusters")
 def optimize_clusters(db: Session = Depends(get_db)):
     """Testet verschiedene Cluster-Anzahlen und empfiehlt die Optimale."""
-    return find_optimal_clusters(db) 
+    return find_optimal_clusters(db)
+
+# === 7. Optimale Contamination finden ===
+@router.get("/optimize-contamination")
+def optimize_contamination(db:Session = Depends(get_db)):
+    """Testet verschiedene Contamination-Werte und empfiehlt den Optimalen"""
+    return find_optimal_contamination(db) 
